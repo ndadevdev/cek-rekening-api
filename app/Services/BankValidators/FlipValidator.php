@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Log;
 
 class FlipValidator implements BankValidatorInterface
 {
-    protected string $apiKey;
-    protected string $baseUrl;
+    protected ?string $apiKey = null;
+    protected ?string $baseUrl = null;
 
     public function __construct()
     {
