@@ -22,14 +22,16 @@ Route::post('/demo', function (\Illuminate\Http\Request $request) {
 
         // auto-login ke API biar dapet token
         try {
-            $http = new \Illuminate\Http\Request();
-            $http->merge(['email' => 'admin@example.com', 'password' => 'password']);
-            $controller = new \App\Http\Controllers\Api\AuthController;
-            $res = $controller->login($http);
-            $data = $res->getData();
-            if ($data->success ?? false) {
-                session(['api_token' => $data->data->token]);
+            $user = \App\Models\User::where('email', 'admin@example.com')->first();
+            if (!$user) {
+                $user = \App\Models\User::factory()->create([
+                    'name' => 'Admin Developer',
+                    'email' => 'admin@example.com',
+                    'password' => bcrypt('password'),
+                ]);
             }
+            $token = $user->createToken('api-token')->plainTextToken;
+            session(['api_token' => $token]);
         } catch (\Throwable $e) {
             // abai
         }
